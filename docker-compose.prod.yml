@@ -1,0 +1,25 @@
+services:
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required in production}
+    ports: []  # Don't expose Postgres in production
+
+  backend:
+    build:
+      context: ./backend
+      target: production
+    environment:
+      NODE_ENV: production
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required in production}
+      FRONTEND_URL: ${FRONTEND_URL:?FRONTEND_URL is required in production}
+    volumes:
+      - finroots-uploads:/app/uploads
+    ports: []  # Backend only accessible via frontend nginx proxy
+
+  frontend:
+    build:
+      context: ./frontend
+      target: production
+    ports:
+      - "80:80"
+    volumes: []
