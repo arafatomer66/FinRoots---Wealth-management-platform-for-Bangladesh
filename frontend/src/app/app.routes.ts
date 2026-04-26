@@ -82,6 +82,21 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'investments',
+    loadComponent: () => import('./features/investments/investment-list/investment-list.component').then(m => m.InvestmentListComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'insurance',
+    loadComponent: () => import('./features/insurance/insurance-list/insurance-list.component').then(m => m.InsuranceListComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'charity',
+    loadComponent: () => import('./features/charity/charity-list/charity-list.component').then(m => m.CharityListComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'profile',
     loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent),
     canActivate: [authGuard],

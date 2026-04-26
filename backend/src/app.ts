@@ -23,6 +23,9 @@ import budgetRoutes from './modules/budgets/budgets.routes';
 import documentRoutes from './modules/documents/documents.routes';
 import exportRoutes from './modules/export/export.routes';
 import recurringRoutes from './modules/recurring/recurring.routes';
+import investmentRoutes from './modules/investments/investments.routes';
+import insuranceRoutes from './modules/insurance/insurance.routes';
+import charityRoutes from './modules/charity/charity.routes';
 
 dotenv.config({ path: '../.env' });
 
@@ -84,6 +87,9 @@ app.use('/api/budgets', budgetRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/export', exportRoutes);
 app.use('/api/recurring', recurringRoutes);
+app.use('/api/investments', investmentRoutes);
+app.use('/api/insurance', insuranceRoutes);
+app.use('/api/charity', charityRoutes);
 
 // Health check (no rate limit)
 app.get('/api/health', (_req, res) => {

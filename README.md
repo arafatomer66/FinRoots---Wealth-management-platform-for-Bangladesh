@@ -39,6 +39,29 @@
 - Persisted in named Docker volume (survives rebuilds)
 - One-click download
 
+### 📈 Stock Portfolio (DSE / CSE)
+- Track holdings on Dhaka and Chittagong stock exchanges
+- Manual price updates with one-click pencil button
+- Auto-calculated invested, market value, gain/loss (color-coded), gain %
+- Portfolio summary: total invested, market value, P/L, DSE vs CSE split
+
+### 🛡️ Insurance Policies
+- 6 types: life, health, vehicle, property, travel, other
+- Track premium frequency, sum assured, next premium date, beneficiary
+- **Upcoming premiums in 30 days** highlighted on the summary
+- Auto-calculates next premium date from frequency
+
+### ❤️ Sadaqah & Zakat Tracker
+- Log zakat, sadaqah, fitra, qurbani, lillah donations
+- Hijri year field for religious record-keeping
+- Annual summary across all donation types and recipient categories
+- Year-by-year navigation to see your giving history
+
+### 🕌 Hajj & Umrah Savings
+- Quick templates with current BD package costs (Govt/Private Hajj, Standard/Premium Umrah)
+- Link the goal to a specific family member (save for parents, spouse, children)
+- Visual mosque badge on the goal card
+
 ### 🕌 Islamic Inheritance Calculator
 - **Sharia-compliant** distribution across spouse, children, parents, siblings
 - Separate calculators for **Hindu** and **Christian** inheritance laws

@@ -191,6 +191,62 @@ export class ApiService {
     return this.http.get<any[]>(`${this.baseUrl}/dashboard/income-vs-expense`, { params: { months: String(months) } });
   }
 
+  // Investments (DSE/CSE)
+  getInvestments(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/investments`);
+  }
+  getInvestmentSummary(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/investments/summary`);
+  }
+  createInvestment(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/investments`, data);
+  }
+  updateInvestment(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/investments/${id}`, data);
+  }
+  updateInvestmentPrice(id: number, current_price: number): Observable<any> {
+    return this.http.put(`${this.baseUrl}/investments/${id}/price`, { current_price });
+  }
+  deleteInvestment(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/investments/${id}`);
+  }
+
+  // Insurance
+  getInsurance(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/insurance`);
+  }
+  getInsuranceSummary(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/insurance/summary`);
+  }
+  createInsurance(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/insurance`, data);
+  }
+  updateInsurance(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/insurance/${id}`, data);
+  }
+  deleteInsurance(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/insurance/${id}`);
+  }
+
+  // Charity / Sadaqah
+  getCharity(year?: number): Observable<any[]> {
+    const params: Record<string, string> = year ? { year: String(year) } : {};
+    return this.http.get<any[]>(`${this.baseUrl}/charity`, { params });
+  }
+  getCharitySummary(year?: number): Observable<any> {
+    const params: Record<string, string> = year ? { year: String(year) } : {};
+    return this.http.get(`${this.baseUrl}/charity/summary`, { params });
+  }
+  createCharity(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/charity`, data);
+  }
+  updateCharity(id: number, data: any): Observable<any> {
+    return this.http.put(`${this.baseUrl}/charity/${id}`, data);
+  }
+  deleteCharity(id: number): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/charity/${id}`);
+  }
+
   // User Profile
   getProfile(): Observable<any> {
     return this.http.get(`${this.baseUrl}/users/profile`);

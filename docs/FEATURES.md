@@ -61,6 +61,40 @@ Categories: home loan, car loan, personal loan, credit card, business loan. Trac
 
 Track financial goals (target amount, deadline, current progress). Used by health score's goal-progress pillar.
 
+### Hajj / Umrah savings goals
+- Quick-create templates with current BD package costs:
+  - Hajj (Govt Package) — ৳5,50,000
+  - Hajj (Private Package) — ৳7,80,000
+  - Umrah (14-day Standard) — ৳1,80,000
+  - Umrah (Premium) — ৳2,80,000
+- `pilgrimage_for` field links the goal to a family member (you can save for parents, spouse, etc.)
+- Visual mosque badge in the goal card
+
+## Investment portfolio (DSE / CSE)
+
+- Track stock holdings on Dhaka Stock Exchange and Chittagong Stock Exchange
+- Per-holding: ticker, company name, sector, exchange, quantity, buy price, current price, buy date
+- **Manual price updates** with one-click pencil button (live API integration is on the roadmap)
+- Auto-calculated invested capital, market value, gain/loss, gain percent
+- Portfolio summary: total invested, total market value, total P/L (color-coded green/red), DSE vs CSE split
+
+## Insurance policies
+
+- 6 policy types: life, health, vehicle, property, travel, other
+- Per-policy: insurer, policy number, sum assured, premium, premium frequency (monthly/quarterly/half-yearly/yearly/one-time), start/maturity dates, beneficiary
+- Auto-calculates next premium date from frequency on create
+- Summary: active policies, total sum assured, annualized premium, **upcoming premiums in 30 days** (highlighted)
+- Policy cards color-coded by type
+
+## Sadaqah & Charity tracker
+
+- 6 donation types: zakat, sadaqah, fitra, qurbani, lillah, other
+- 8 categories: cash, food, clothing, medical, education, orphan, mosque, other
+- Hijri year field for religious record-keeping
+- **Annual summary**: total given, zakat paid, sadaqah, fitra, qurbani, lillah breakdowns
+- Year navigation to see prior years' giving history
+- Ties to the zakat calculator: when calculating zakat, the app can show what's already been paid this year
+
 ## Islamic inheritance
 
 `/api/inheritance` calculator with three faith-specific implementations (Muslim, Hindu, Christian). Muslim calculator implements Sharia distribution rules across spouse, children, parents, siblings.

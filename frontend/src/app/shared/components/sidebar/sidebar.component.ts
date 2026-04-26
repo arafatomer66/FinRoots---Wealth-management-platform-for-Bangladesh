@@ -59,6 +59,14 @@ import { AuthService } from '../../../core/services/auth.service';
           <mat-icon>pie_chart</mat-icon>
           <span>Budgets</span>
         </a>
+        <a class="nav-item" routerLink="/investments" routerLinkActive="active">
+          <mat-icon>trending_up</mat-icon>
+          <span>Investments</span>
+        </a>
+        <a class="nav-item" routerLink="/insurance" routerLinkActive="active">
+          <mat-icon>shield</mat-icon>
+          <span>Insurance</span>
+        </a>
         <a class="nav-item" routerLink="/goals" routerLinkActive="active">
           <mat-icon>flag</mat-icon>
           <span>Goals</span>
@@ -86,6 +94,10 @@ import { AuthService } from '../../../core/services/auth.service';
         <a class="nav-item" routerLink="/zakat" routerLinkActive="active">
           <mat-icon>volunteer_activism</mat-icon>
           <span>Zakat</span>
+        </a>
+        <a class="nav-item" routerLink="/charity" routerLinkActive="active">
+          <mat-icon>favorite</mat-icon>
+          <span>Sadaqah</span>
         </a>
       </nav>
 

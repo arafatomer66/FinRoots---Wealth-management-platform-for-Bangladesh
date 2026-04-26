@@ -17,6 +17,9 @@
 | `inheritance_plans` | Saved distributions | `user_id`, `religion`, `total_estate`, `distribution` (JSON) |
 | `tax_filings` | NBR tax records | `user_id`, `fiscal_year`, `taxable_income`, `tax_payable` |
 | `budgets` | Monthly budgets | `user_id`, `category`, `year`, `month`, `amount`, unique `(user_id, category, year, month)` |
+| `investments` | DSE/CSE stock holdings | `user_id`, `ticker`, `exchange` (DSE/CSE), `quantity`, `buy_price`, `current_price`, `buy_date`, `last_price_update` |
+| `insurance_policies` | Insurance | `user_id`, `type`, `insurer`, `policy_number`, `sum_assured`, `premium`, `premium_frequency`, `next_premium_date`, `beneficiary_family_id` |
+| `charity` | Donations | `user_id`, `type` (zakat/sadaqah/fitra/qurbani/lillah/other), `amount`, `category`, `date`, `hijri_year` |
 
 Indexes added in `20260426_011_add_indexes.ts` cover `user_id` on every table plus `(user_id, date)` on income/expenses for dashboard range queries.
 
@@ -30,7 +33,7 @@ All endpoints prefixed `/api`. All except `/auth/*` and `/health` require `Autho
 - `GET /auth/me` — current user
 
 ### Resources (uniform CRUD pattern)
-Each of `family`, `assets`, `liabilities`, `income`, `expenses`, `goals`, `documents`, `budgets`:
+Each of `family`, `assets`, `liabilities`, `income`, `expenses`, `goals`, `documents`, `budgets`, `investments`, `insurance`, `charity`:
 - `GET /<resource>` — list (paginated: `?page=1&limit=20`)
 - `GET /<resource>/:id` — read
 - `POST /<resource>` — create
@@ -48,6 +51,11 @@ Each of `family`, `assets`, `liabilities`, `income`, `expenses`, `goals`, `docum
 - `POST /recurring/process` — process all due recurring records
 - `PUT /recurring/income/:id/toggle`, `PUT /recurring/expense/:id/toggle`
 - `GET /export/{assets|income|expenses|liabilities|full-report}` — CSV download
+- `GET /investments/summary` — total invested, market value, P/L, DSE/CSE split
+- `PUT /investments/:id/price` — quick price update (sets `last_price_update`)
+- `GET /insurance/summary` — active policies, sum assured, annual premium, upcoming due
+- `GET /charity?year=2026` — list filtered by year
+- `GET /charity/summary?year=2026` — yearly totals by type and category
 - `POST /inheritance/calculate` — `{religion, estate, family[]}` → distribution
 - `POST /zakat/calculate` — eligible assets → 2.5% if over nisab
 - `POST /tax/calculate` — `{taxable_income, fiscal_year}` → slab calculation

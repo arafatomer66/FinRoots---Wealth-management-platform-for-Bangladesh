@@ -24,6 +24,30 @@ import { DecimalPipe, DatePipe } from '@angular/common';
         </div>
       </div>
 
+      <!-- Pilgrimage Quick Templates -->
+      <div class="pilgrimage-strip">
+        <div class="ps-label">
+          <mat-icon>mosque</mat-icon>
+          <span>Pilgrimage templates</span>
+        </div>
+        <button class="pt-card hajj" (click)="useTemplate('hajj_govt')">
+          <span class="pt-name">Hajj (Govt Package)</span>
+          <span class="pt-amount">৳ 5,50,000</span>
+        </button>
+        <button class="pt-card hajj" (click)="useTemplate('hajj_private')">
+          <span class="pt-name">Hajj (Private Package)</span>
+          <span class="pt-amount">৳ 7,80,000</span>
+        </button>
+        <button class="pt-card umrah" (click)="useTemplate('umrah_standard')">
+          <span class="pt-name">Umrah (14-day Standard)</span>
+          <span class="pt-amount">৳ 1,80,000</span>
+        </button>
+        <button class="pt-card umrah" (click)="useTemplate('umrah_premium')">
+          <span class="pt-name">Umrah (Premium)</span>
+          <span class="pt-amount">৳ 2,80,000</span>
+        </button>
+      </div>
+
       <!-- Add Goal -->
       <div class="form-card">
         <h3 class="section-title">Add New Goal</h3>
@@ -41,6 +65,7 @@ import { DecimalPipe, DatePipe } from '@angular/common';
                 <mat-option value="housing">Housing</mat-option>
                 <mat-option value="emergency">Emergency Fund</mat-option>
                 <mat-option value="hajj">Hajj</mat-option>
+                <mat-option value="umrah">Umrah</mat-option>
                 <mat-option value="marriage">Marriage</mat-option>
                 <mat-option value="vehicle">Vehicle</mat-option>
                 <mat-option value="travel">Travel</mat-option>
@@ -48,6 +73,17 @@ import { DecimalPipe, DatePipe } from '@angular/common';
                 <mat-option value="other">Other</mat-option>
               </mat-select>
             </mat-form-field>
+            @if (isPilgrimage()) {
+              <mat-form-field appearance="outline">
+                <mat-label>For (Family Member)</mat-label>
+                <mat-select formControlName="pilgrimage_for">
+                  <mat-option [value]="null">Self</mat-option>
+                  @for (m of family; track m.id) {
+                    <mat-option [value]="m.id">{{ m.name }} ({{ m.relationship }})</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            }
           </div>
           <div class="form-row">
             <mat-form-field appearance="outline">
@@ -89,8 +125,14 @@ import { DecimalPipe, DatePipe } from '@angular/common';
                 </button>
               </div>
               <div class="goal-meta">
-                <span class="goal-cat">{{ goal.category }}</span>
+                <span class="goal-cat" [class.pilgrim]="goal.category === 'hajj' || goal.category === 'umrah'">
+                  @if (goal.category === 'hajj' || goal.category === 'umrah') { <mat-icon>mosque</mat-icon> }
+                  {{ goal.category }}
+                </span>
                 <span class="goal-priority" [class]="goal.priority">{{ goal.priority }}</span>
+                @if (goal.pilgrimage_for_name) {
+                  <span class="for-tag">for {{ goal.pilgrimage_for_name }}</span>
+                }
               </div>
               <div class="goal-progress">
                 <div class="progress-track">
@@ -120,6 +162,22 @@ import { DecimalPipe, DatePipe } from '@angular/common';
   styles: [`
     .page { max-width: 1100px; }
     .page-header { margin-bottom: 24px; h1 { font-size: 28px; margin-bottom: 4px; } .subtitle { color: var(--text-secondary); font-size: 14px; } }
+
+    .pilgrimage-strip { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px; background: linear-gradient(135deg, rgba(212,168,83,0.08), rgba(52,211,153,0.04)); border: 1px solid rgba(212,168,83,0.25); border-radius: var(--radius-lg); margin-bottom: 20px; }
+    .ps-label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--accent-gold); font-weight: 600;
+      mat-icon { font-size: 18px; width: 18px; height: 18px; }
+    }
+    .pt-card { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 14px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); cursor: pointer; transition: all var(--transition-base);
+      &:hover { border-color: var(--accent-gold); background: rgba(212,168,83,0.08); transform: translateY(-1px); }
+      &.umrah:hover { border-color: var(--accent-emerald); background: rgba(52,211,153,0.08); }
+    }
+    .pt-name { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+    .pt-amount { font-size: 14px; font-weight: 700; color: var(--text-primary); }
+
+    .for-tag { font-size: 11px; color: var(--accent-gold); padding: 2px 8px; background: rgba(212,168,83,0.1); border-radius: 4px; }
+    .goal-cat.pilgrim { background: rgba(212,168,83,0.15); color: var(--accent-gold); display: inline-flex; align-items: center; gap: 4px;
+      mat-icon { font-size: 13px; width: 13px; height: 13px; }
+    }
 
     .form-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 24px; }
     .section-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 16px; }
@@ -174,23 +232,58 @@ import { DecimalPipe, DatePipe } from '@angular/common';
 })
 export class GoalListComponent implements OnInit {
   goals: any[] = [];
+  family: any[] = [];
   form: FormGroup;
+
+  private templates: Record<string, { name: string; amount: number; category: string }> = {
+    hajj_govt: { name: 'Hajj Fund (Govt Package)', amount: 550000, category: 'hajj' },
+    hajj_private: { name: 'Hajj Fund (Private Package)', amount: 780000, category: 'hajj' },
+    umrah_standard: { name: 'Umrah Fund (Standard)', amount: 180000, category: 'umrah' },
+    umrah_premium: { name: 'Umrah Fund (Premium)', amount: 280000, category: 'umrah' },
+  };
 
   constructor(private api: ApiService, private fb: FormBuilder) {
     this.form = this.fb.group({
       name: ['', Validators.required], category: ['other', Validators.required],
       target_amount: [null, [Validators.required, Validators.min(1)]],
       current_amount: [0], target_date: [''], priority: ['medium'],
+      pilgrimage_for: [null],
     });
   }
 
-  ngOnInit() { this.load(); }
-  load() { this.api.getGoals().subscribe(result => this.goals = result.data); }
+  ngOnInit() {
+    this.load();
+    this.api.getFamily().subscribe(rows => { this.family = rows; });
+  }
+
+  load() {
+    this.api.getGoals().subscribe(result => {
+      this.goals = result.data;
+    });
+  }
+
+  isPilgrimage(): boolean {
+    const c = this.form.value.category;
+    return c === 'hajj' || c === 'umrah';
+  }
+
+  useTemplate(key: string) {
+    const t = this.templates[key];
+    if (!t) return;
+    this.form.patchValue({
+      name: t.name,
+      category: t.category,
+      target_amount: t.amount,
+      priority: 'medium',
+    });
+  }
 
   addGoal() {
     if (this.form.invalid) return;
-    this.api.createGoal(this.form.value).subscribe(() => {
-      this.form.reset({ category: 'other', current_amount: 0, priority: 'medium' });
+    const payload = { ...this.form.value };
+    if (!this.isPilgrimage()) payload.pilgrimage_for = null;
+    this.api.createGoal(payload).subscribe(() => {
+      this.form.reset({ category: 'other', current_amount: 0, priority: 'medium', pilgrimage_for: null });
       this.load();
     });
   }
